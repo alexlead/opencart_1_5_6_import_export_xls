@@ -20,7 +20,16 @@
      <h3>Получить данные из БД</h3>
       <hr>
           <div class="buttons"><a onclick="location='<?php echo $export; ?>'" class="button"><span><?php echo $button_export; ?></span></a> | <a onclick="location='<?php echo $export_cat; ?>'" class="button"><span><?php echo $button_export_cat; ?></span></a> | <a onclick="location='<?php echo $export_prod; ?>'" class="button"><span><?php echo $button_export_prod; ?></span></a></div>
+          <hr/>
           <br/>
+          <form action="<?php echo $import_by_id; ?>" method="post" id="goods_select">
+              <label for="start_id">Начиная с номера</label>
+              <input type="text" id="start_id" name="start_id">
+              <label for="finish_id">по номер</label>
+              <input type="text" id="finish_id" name="finish_id">
+          </form>
+          <br/>
+          <a onclick="$('#goods_select').submit();" class="button"><span><?php echo $button_export; ?></span></a>
           <br/>
           <hr/>
 <h3>Загрузить данные в БД</h3>

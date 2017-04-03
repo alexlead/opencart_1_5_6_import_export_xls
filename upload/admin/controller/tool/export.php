@@ -69,6 +69,8 @@ class ControllerToolExport extends Controller {
 		);
 		
 		$this->data['action'] = $this->url->link('tool/export', 'token=' . $this->session->data['token'], 'SSL');
+		
+        $this->data['import_by_id'] = $this->url->link('tool/export/download_product_by_id', 'token=' . $this->session->data['token'], 'SSL');
 
 		$this->data['export'] = $this->url->link('tool/export/download', 'token=' . $this->session->data['token'], 'SSL');
         $this->data['export_cat'] = $this->url->link('tool/export/download_categories', 'token=' . $this->session->data['token'], 'SSL');
@@ -91,6 +93,10 @@ class ControllerToolExport extends Controller {
         $this->download(2);
     }
     
+    public function download_product_by_id() {
+        
+        $this->download(0);
+    }
 	public function download($act=0) {
 		if ($this->validate()) {
 

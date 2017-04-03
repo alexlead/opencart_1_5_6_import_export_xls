@@ -56,7 +56,9 @@ class ModelToolExport extends Model {
 
     public $mode_add_data; // mode 1-Delete data before uploading; 2-Insert data as new; 
     public $switch_file_type; // switch 1-full data file; 2-Categories data only; 3-Product data only
-    
+
+    private $start_id;
+    private $finish_id;
     
 	function clean( &$str, $allowBlanks=FALSE ) {
 		$result = "";
@@ -2165,9 +2167,25 @@ class ModelToolExport extends Model {
 		$query .= "LEFT JOIN `".DB_PREFIX."length_class_description` mc ON mc.length_class_id=p.length_class_id ";
 		$query .= "  AND mc.language_id=$languageId ";
 		$query .= "LEFT JOIN `".DB_PREFIX."product_related` pr ON pr.product_id=p.product_id ";
+        
+        if($this->start_id > 0 || $this->finish_id > 0){
+            $query .="WHERE ";
+            if($this->start_id > 0){ 
+                $query .=" p.product_id >= '{$this->start_id}' ";
+            }
+            if($this->start_id > 0 && $this->finish_id > 0){
+                $query .=" AND ";
+            }
+             if($this->finish_id > 0){ 
+                $query .=" p.product_id <= '{$this->finish_id}' ";
+            }
+        }
+    
 		$query .= "GROUP BY p.product_id ";
 		$query .= "ORDER BY p.product_id, pc.category_id; ";
+        
 		$result = $database->query( $query );
+                
 		foreach ($result->rows as $row) {
 			$worksheet->setRow( $i, 26 );
 			$productId = $row['product_id'];
@@ -2257,6 +2275,20 @@ class ModelToolExport extends Model {
 		$j = 0;
 		$query  = "SELECT `product_id`, `image`, `sort_order` ";
 		$query .= "FROM `".DB_PREFIX."product_image` pi ";
+        
+        if($this->start_id > 0 || $this->finish_id > 0){
+            $query .="WHERE ";
+            if($this->start_id > 0){ 
+                $query .=" pi.`product_id` >= '{$this->start_id}' ";
+            }
+            if($this->start_id > 0 && $this->finish_id > 0){
+                $query .=" AND ";
+            }
+             if($this->finish_id > 0){ 
+                $query .=" pi.`product_id` <= '{$this->finish_id}' ";
+            }
+        }
+        
 		$query .= "ORDER BY pi.`product_id`, pi.`sort_order`, pi.`image`;";
 		$result = $database->query( $query );
 		foreach ($result->rows as $row) {
@@ -2339,6 +2371,21 @@ class ModelToolExport extends Model {
 		$query .= "LEFT JOIN `".DB_PREFIX."option_value` ov ON ov.option_value_id=pov.option_value_id ";
 		$query .= "LEFT JOIN `".DB_PREFIX."option_value_description` ovd ON ovd.option_value_id=ov.option_value_id AND ovd.language_id=$languageId ";
 		$query .= "LEFT JOIN `".DB_PREFIX."option_description` od ON od.option_id=o.option_id AND od.language_id=$languageId ";
+        
+                if($this->start_id > 0 || $this->finish_id > 0){
+            $query .="WHERE ";
+            if($this->start_id > 0){ 
+                $query .=" po.product_id >= '{$this->start_id}' ";
+            }
+            if($this->start_id > 0 && $this->finish_id > 0){
+                $query .=" AND ";
+            }
+             if($this->finish_id > 0){ 
+                $query .=" po.product_id <= '{$this->finish_id}' ";
+            }
+        }
+
+        
 		$query .= "ORDER BY po.product_id, po.option_id, pov.option_value_id;";
 		$result = $database->query( $query );
 		foreach ($result->rows as $row) {
@@ -2399,7 +2446,22 @@ class ModelToolExport extends Model {
 		$query .= "LEFT JOIN `".DB_PREFIX."attribute_description` ad ON ad.attribute_id=a.attribute_id AND ad.language_id=$languageId ";
 		$query .= "INNER JOIN `".DB_PREFIX."attribute_group` ag ON ag.attribute_group_id=a.attribute_group_id ";
 		$query .= "LEFT JOIN `".DB_PREFIX."attribute_group_description` agd ON agd.attribute_group_id=a.attribute_group_id AND agd.language_id=$languageId ";
-		$query .= "WHERE pa.language_id=$languageId ";
+		$query .= "WHERE pa.language_id=$languageId ";        
+        
+        if($this->start_id > 0 || $this->finish_id > 0){
+            $query .="AND ";
+            if($this->start_id > 0){ 
+                $query .=" pa.product_id >= '{$this->start_id}' ";
+            }
+            if($this->start_id > 0 && $this->finish_id > 0){
+                $query .=" AND ";
+            }
+             if($this->finish_id > 0){ 
+                $query .=" pa.product_id <= '{$this->finish_id}' ";
+            }
+        }
+
+        
 		$query .= "ORDER BY pa.product_id, attribute_group_sort_order, ag.attribute_group_id, a.sort_order, a.attribute_id;";
 		$result = $database->query( $query );
 		foreach ($result->rows as $row) {
@@ -2443,6 +2505,20 @@ class ModelToolExport extends Model {
 		$query  = "SELECT ps.*, cgd.name FROM `".DB_PREFIX."product_special` ps ";
 		$query .= "LEFT JOIN `".DB_PREFIX."customer_group_description` cgd ON cgd.customer_group_id=ps.customer_group_id ";
 		$query .= "  AND cgd.language_id=$languageId ";
+        
+        if($this->start_id > 0 || $this->finish_id > 0){
+            $query .="WHERE ";
+            if($this->start_id > 0){ 
+                $query .=" ps.product_id >= '{$this->start_id}' ";
+            }
+            if($this->start_id > 0 && $this->finish_id > 0){
+                $query .=" AND ";
+            }
+             if($this->finish_id > 0){ 
+                $query .=" ps.product_id <= '{$this->finish_id}' ";
+            }
+        }
+
 		$query .= "ORDER BY ps.product_id, cgd.name";
 		$result = $database->query( $query );
 		foreach ($result->rows as $row) {
@@ -2489,6 +2565,21 @@ class ModelToolExport extends Model {
 		$query  = "SELECT pd.*, cgd.name FROM `".DB_PREFIX."product_discount` pd ";
 		$query .= "LEFT JOIN `".DB_PREFIX."customer_group_description` cgd ON cgd.customer_group_id=pd.customer_group_id ";
 		$query .= "  AND cgd.language_id=$languageId ";
+        
+        if($this->start_id > 0 || $this->finish_id > 0){
+            $query .="WHERE ";
+            if($this->start_id > 0){ 
+                $query .=" pd.product_id >= '{$this->start_id}' ";
+            }
+            if($this->start_id > 0 && $this->finish_id > 0){
+                $query .=" AND ";
+            }
+             if($this->finish_id > 0){ 
+                $query .=" pd.product_id <= '{$this->finish_id}' ";
+            }
+        }
+
+        
 		$query .= "ORDER BY pd.product_id, cgd.name";
 		$result = $database->query( $query );
 		foreach ($result->rows as $row) {
@@ -2528,6 +2619,21 @@ class ModelToolExport extends Model {
 		$query  = "SELECT pr.*, cgd.name FROM `".DB_PREFIX."product_reward` pr ";
 		$query .= "LEFT JOIN `".DB_PREFIX."customer_group_description` cgd ON cgd.customer_group_id=pr.customer_group_id ";
 		$query .= "  AND cgd.language_id=$languageId ";
+        
+        if($this->start_id > 0 || $this->finish_id > 0){
+            $query .="WHERE ";
+            if($this->start_id > 0){ 
+                $query .=" pr.product_id >= '{$this->start_id}' ";
+            }
+            if($this->start_id > 0 && $this->finish_id > 0){
+                $query .=" AND ";
+            }
+             if($this->finish_id > 0){ 
+                $query .=" pr.product_id <= '{$this->finish_id}' ";
+            }
+        }
+
+        
 		$query .= "ORDER BY pr.product_id, cgd.name";
 		$result = $database->query( $query );
 		foreach ($result->rows as $row) {
@@ -2573,6 +2679,21 @@ class ModelToolExport extends Model {
 		require_once "Spreadsheet/Excel/Writer.php";
 		chdir( $cwd );
 		
+    $this->start_id = 0;
+    $this->finish_id = 0;
+       
+        if(isset($this->request->post['start_id']))$start_id = (int)($this->request->post['start_id']);
+        if(isset($this->request->post['finish_id']))$finish_id = (int)($this->request->post['finish_id']);
+        
+        if(isset($start_id) && isset($finish_id) && $start_id > $finish_id && $finish_id != 0){
+            $tmp = $start_id;
+            $start_id = $finish_id;
+            $finish_id = $tmp; 
+        }
+        
+    if(isset($start_id))$this->start_id = $start_id;
+    if(isset($finish_id))$this->finish_id = $finish_id;
+        
 		// Creating a workbook
 		$workbook = new Spreadsheet_Excel_Writer();
 		$workbook->setTempDir(DIR_CACHE);

@@ -24,6 +24,9 @@ Setup
 2. Turn on access to the module for user group
 3. Open module in menu "System > Import / Export"
 
+UPDATE:
+
+added selectors of id products for dowloading from DB
 
 ****** RUSSIAN  *****************************************
 
@@ -55,3 +58,7 @@ Setup
 1. Скопируйте  файлы и папки из папки upload в корень сайта;
 2. Установите право администратора на пользование модулем
 3. Переход к модулю осуществляется через меню СИСТЕМА > Экспорт / Импорт
+
+Обновление:
+
+Добавлена возможность ограниченной выборки товаров из БД по номерам ID
